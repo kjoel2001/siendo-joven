@@ -16,28 +16,25 @@ export default function Home() {
 
   const audioRef = useRef(null);
   const sectionRefs = useRef([]);
-
+  const base = import.meta.env.BASE_URL;
   const podcasts = [
     {
       id: 1,
       titulo: "Cómo afrontar la presión académica",
-      descripcion:
-        "Aprende técnicas para controlar el estrés y mejorar tu rendimiento académico.",
-      audio: "/audio/alex-morgan-neon-synthwave-drive-537447.mp3",
+      descripcion: "Aprende técnicas para controlar el estrés y mejorar tu rendimiento académico.",
+      audio: base + "audio/alex-morgan-neon-synthwave-drive-537447.mp3",
     },
     {
       id: 2,
       titulo: "Amistades que sí valen la pena",
-      descripcion:
-        "Cómo identificar amistades saludables y fortalecer tus relaciones.",
-      audio: "/audio/aries-beats-synth-rock.mp3",
+      descripcion: "Cómo identificar amistades saludables y fortalecer tus relaciones.",
+      audio: base + "audio/aries-beats-synth-rock.mp3",
     },
     {
       id: 3,
       titulo: "¿Qué carrera debería elegir?",
-      descripcion:
-        "Consejos prácticos para tomar una de las decisiones más importantes de tu vida.",
-      audio: "/audio/fsm-team-escp-neonscapes.mp3",
+      descripcion: "Consejos prácticos para tomar una de las decisiones más importantes de tu vida.",
+      audio: base + "audio/fsm-team-escp-neonscapes.mp3",
     },
   ];
 
