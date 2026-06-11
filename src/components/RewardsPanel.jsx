@@ -1,0 +1,146 @@
+import { useState } from "react";
+
+export default function RewardsPanel({
+  rewardsOpen,
+  setRewardsOpen,
+}) {
+  const [claimedRewards, setClaimedRewards] =
+    useState([]);
+
+  if (!rewardsOpen) return null;
+
+  const userPoints = 350;
+
+  const rewards = [
+    {
+      id: 1,
+      icon: "🥉",
+      title: "Principiante",
+      points: 100,
+    },
+    {
+      id: 2,
+      icon: "🥈",
+      title: "Explorador",
+      points: 250,
+    },
+    {
+      id: 3,
+      icon: "🎨",
+      title: "Tema Premium",
+      points: 500,
+    },
+    {
+      id: 4,
+      icon: "⭐",
+      title: "Perfil Destacado",
+      points: 1000,
+    },
+  ];
+
+  const claimReward = (rewardId) => {
+    if (
+      !claimedRewards.includes(rewardId)
+    ) {
+      setClaimedRewards([
+        ...claimedRewards,
+        rewardId,
+      ]);
+    }
+  };
+
+  return (
+    <div className="hidden lg:flex fixed right-0 top-0 h-screen w-96 bg-slate-900 border-l border-slate-800 z-50 flex-col text-white">
+
+      <div className="p-4 border-b border-slate-700 flex justify-between items-center">
+        <h2 className="font-bold text-xl text-white">
+          🏆 Recompensas
+        </h2>
+
+        <button
+          onClick={() =>
+            setRewardsOpen(false)
+          }
+          className="text-white text-xl"
+        >
+          ✕
+        </button>
+      </div>
+
+      <div className="p-4 overflow-y-auto">
+
+        <div className="bg-purple-600 rounded-xl p-4 mb-5">
+          <p className="text-white">
+            Tus puntos
+          </p>
+
+          <h3 className="text-4xl font-bold text-white">
+            {userPoints}
+          </h3>
+        </div>
+
+        <div className="space-y-4">
+
+          {rewards.map((reward) => {
+            const unlocked =
+              userPoints >= reward.points;
+
+            const claimed =
+              claimedRewards.includes(
+                reward.id
+              );
+
+            return (
+              <div
+                key={reward.id}
+                className="bg-slate-800 p-4 rounded-xl border border-slate-700"
+              >
+                <div className="text-4xl mb-2">
+                  {reward.icon}
+                </div>
+
+                <h4 className="font-bold text-white">
+                  {reward.title}
+                </h4>
+
+                <p className="text-slate-300 mb-3">
+                  {reward.points} puntos
+                </p>
+
+                {claimed ? (
+                  <button
+                    disabled
+                    className="w-full py-2 rounded-lg bg-green-600 text-white"
+                  >
+                    ✓ Reclamada
+                  </button>
+                ) : unlocked ? (
+                  <button
+                    onClick={() =>
+                      claimReward(
+                        reward.id
+                      )
+                    }
+                    className="w-full py-2 rounded-lg bg-purple-600 hover:bg-purple-700 text-white"
+                  >
+                    Reclamar
+                  </button>
+                ) : (
+                  <button
+                    disabled
+                    className="w-full py-2 rounded-lg bg-slate-700 text-slate-400"
+                  >
+                    Bloqueada
+                  </button>
+                )}
+              </div>
+            );
+          })}
+
+        </div>
+
+      </div>
+
+    </div>
+  );
+}
