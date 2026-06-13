@@ -44,18 +44,18 @@ export default function PodcastCard({
           </p>
         </div>
 
-        <div className="mt-8 flex items-center justify-center gap-3 md:gap-8 flex-wrap">
+        <div className="mt-6 flex items-center justify-center gap-2 sm:gap-3">
 
           {/* Like */}
           <button
             onClick={toggleLike}
-            className="w-16 md:w-20 flex flex-col items-center justify-center hover:scale-105 transition"
+            className="w-12 sm:w-14 flex flex-col items-center justify-center transition hover:scale-105"
           >
-            <span className="text-3xl md:text-4xl">
+            <span className="text-2xl sm:text-3xl">
               {liked ? "❤️" : "🤍"}
             </span>
 
-            <span className="text-xs text-slate-300 mt-1">
+            <span className="text-[10px] sm:text-xs text-slate-300 mt-1">
               {likes}
             </span>
           </button>
@@ -63,36 +63,38 @@ export default function PodcastCard({
           {/* Rewards */}
           <button
             onClick={() => setRewardsOpen(true)}
-            className="w-16 md:w-20 flex flex-col items-center justify-center hover:scale-105 transition"
+            className="w-12 sm:w-14 flex flex-col items-center justify-center transition hover:scale-105"
           >
-            <span className="text-3xl md:text-4xl">
+            <span className="text-2xl sm:text-3xl">
               🏆
             </span>
 
-            <span className="text-xs text-slate-300 mt-1">
+            <span className="text-[10px] sm:text-xs text-slate-300 mt-1">
               Rewards
             </span>
           </button>
 
           {/* Play */}
-          <AudioPlayer
-            playing={playing}
-            currentIndex={currentIndex}
-            index={index}
-            podcast={podcast}
-            playPodcast={playPodcast}
-          />
+          <div className="mx-1 sm:mx-3">
+            <AudioPlayer
+              playing={playing}
+              currentIndex={currentIndex}
+              index={index}
+              podcast={podcast}
+              playPodcast={playPodcast}
+            />
+          </div>
 
           {/* Chat */}
           <button
             onClick={() => setChatOpen(true)}
-            className="w-16 md:w-20 flex flex-col items-center justify-center hover:scale-105 transition"
+            className="w-12 sm:w-14 flex flex-col items-center justify-center transition hover:scale-105"
           >
-            <span className="text-3xl md:text-4xl">
+            <span className="text-2xl sm:text-3xl">
               💬
             </span>
 
-            <span className="text-xs text-slate-300 mt-1">
+            <span className="text-[10px] sm:text-xs text-slate-300 mt-1">
               115
             </span>
           </button>
@@ -100,14 +102,14 @@ export default function PodcastCard({
           {/* Share */}
           <button
             onClick={() => setShareOpen(true)}
-            className="w-16 md:w-20 flex flex-col items-center justify-center hover:scale-105 transition"
+            className="w-12 sm:w-14 flex flex-col items-center justify-center transition hover:scale-105"
           >
-            <span className="text-3xl md:text-4xl">
+            <span className="text-2xl sm:text-3xl">
               🔗
             </span>
 
-            <span className="text-xs text-slate-300 mt-1">
-              Compartir
+            <span className="text-[10px] sm:text-xs text-slate-300 mt-1">
+              Share
             </span>
           </button>
 
