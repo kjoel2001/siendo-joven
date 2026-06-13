@@ -39,9 +39,7 @@ export default function RewardsPanel({
   ];
 
   const claimReward = (rewardId) => {
-    if (
-      !claimedRewards.includes(rewardId)
-    ) {
+    if (!claimedRewards.includes(rewardId)) {
       setClaimedRewards([
         ...claimedRewards,
         rewardId,
@@ -50,97 +48,172 @@ export default function RewardsPanel({
   };
 
   return (
-    <div className="hidden lg:flex fixed right-0 top-0 h-screen w-96 bg-slate-900 border-l border-slate-800 z-50 flex-col text-white">
+    <>
+      {/* DESKTOP */}
+      <div className="hidden lg:flex fixed right-0 top-0 h-screen w-96 bg-slate-900 border-l border-slate-800 z-50 flex-col text-white">
 
-      <div className="p-4 border-b border-slate-700 flex justify-between items-center">
-        <h2 className="font-bold text-xl text-white">
-          🏆 Recompensas
-        </h2>
+        <div className="p-4 border-b border-slate-700 flex justify-between items-center">
+          <h2 className="font-bold text-xl">
+            🏆 Recompensas
+          </h2>
 
-        <button
+          <button
+            onClick={() =>
+              setRewardsOpen(false)
+            }
+            className="text-xl"
+          >
+            ✕
+          </button>
+        </div>
+
+        <div className="flex-1 overflow-y-auto p-4">
+          <RewardsContent
+            rewards={rewards}
+            userPoints={userPoints}
+            claimedRewards={claimedRewards}
+            claimReward={claimReward}
+          />
+        </div>
+
+      </div>
+
+      {/* MOBILE */}
+      <div className="lg:hidden fixed inset-0 z-50">
+
+        <div
           onClick={() =>
             setRewardsOpen(false)
           }
-          className="text-white text-xl"
-        >
-          ✕
-        </button>
-      </div>
+          className="absolute inset-0 bg-black/60"
+        />
 
-      <div className="p-4 overflow-y-auto">
+        <div className="absolute bottom-0 left-0 right-0 h-[80vh] bg-slate-900 rounded-t-3xl flex flex-col animate-slideUp">
 
-        <div className="bg-purple-600 rounded-xl p-4 mb-5">
-          <p className="text-white">
-            Tus puntos
-          </p>
+          <div className="p-4 border-b border-slate-700 flex justify-between items-center">
 
-          <h3 className="text-4xl font-bold text-white">
-            {userPoints}
-          </h3>
+            <h2 className="font-bold text-xl text-white">
+              🏆 Recompensas
+            </h2>
+
+            <button
+              onClick={() =>
+                setRewardsOpen(false)
+              }
+              className="text-white text-xl"
+            >
+              ✕
+            </button>
+
+          </div>
+
+          <div className="flex-1 overflow-y-auto p-4">
+            <RewardsContent
+              rewards={rewards}
+              userPoints={userPoints}
+              claimedRewards={claimedRewards}
+              claimReward={claimReward}
+            />
+          </div>
+
         </div>
 
-        <div className="space-y-4">
+      </div>
 
-          {rewards.map((reward) => {
-            const unlocked =
-              userPoints >= reward.points;
+      <style>{`
+        @keyframes slideUp {
+          from {
+            transform: translateY(100%);
+          }
 
-            const claimed =
-              claimedRewards.includes(
-                reward.id
-              );
+          to {
+            transform: translateY(0);
+          }
+        }
 
-            return (
-              <div
-                key={reward.id}
-                className="bg-slate-800 p-4 rounded-xl border border-slate-700"
-              >
-                <div className="text-4xl mb-2">
-                  {reward.icon}
-                </div>
+        .animate-slideUp {
+          animation: slideUp .25s ease-out;
+        }
+      `}</style>
+    </>
+  );
+}
 
-                <h4 className="font-bold text-white">
-                  {reward.title}
-                </h4>
+function RewardsContent({
+  rewards,
+  userPoints,
+  claimedRewards,
+  claimReward,
+}) {
+  return (
+    <>
+      <div className="bg-purple-600 rounded-xl p-4 mb-5">
+        <p className="text-white">
+          Tus puntos
+        </p>
 
-                <p className="text-slate-300 mb-3">
-                  {reward.points} puntos
-                </p>
+        <h3 className="text-4xl font-bold text-white">
+          {userPoints}
+        </h3>
+      </div>
 
-                {claimed ? (
-                  <button
-                    disabled
-                    className="w-full py-2 rounded-lg bg-green-600 text-white"
-                  >
-                    ✓ Reclamada
-                  </button>
-                ) : unlocked ? (
-                  <button
-                    onClick={() =>
-                      claimReward(
-                        reward.id
-                      )
-                    }
-                    className="w-full py-2 rounded-lg bg-purple-600 hover:bg-purple-700 text-white"
-                  >
-                    Reclamar
-                  </button>
-                ) : (
-                  <button
-                    disabled
-                    className="w-full py-2 rounded-lg bg-slate-700 text-slate-400"
-                  >
-                    Bloqueada
-                  </button>
-                )}
-              </div>
+      <div className="space-y-4">
+
+        {rewards.map((reward) => {
+          const unlocked =
+            userPoints >= reward.points;
+
+          const claimed =
+            claimedRewards.includes(
+              reward.id
             );
-          })}
 
-        </div>
+          return (
+            <div
+              key={reward.id}
+              className="bg-slate-800 p-4 rounded-xl border border-slate-700"
+            >
+              <div className="text-4xl mb-2">
+                {reward.icon}
+              </div>
+
+              <h4 className="font-bold text-white">
+                {reward.title}
+              </h4>
+
+              <p className="text-slate-300 mb-3">
+                {reward.points} puntos
+              </p>
+
+              {claimed ? (
+                <button
+                  disabled
+                  className="w-full py-2 rounded-lg bg-green-600 text-white"
+                >
+                  ✓ Reclamada
+                </button>
+              ) : unlocked ? (
+                <button
+                  onClick={() =>
+                    claimReward(reward.id)
+                  }
+                  className="w-full py-2 rounded-lg bg-purple-600 hover:bg-purple-700 text-white"
+                >
+                  Reclamar
+                </button>
+              ) : (
+                <button
+                  disabled
+                  className="w-full py-2 rounded-lg bg-slate-700 text-slate-400"
+                >
+                  Bloqueada
+                </button>
+              )}
+            </div>
+          );
+        })}
 
       </div>
-
-    </div>
+    </>
   );
 }

@@ -4,42 +4,67 @@ import PodcastCard from "../components/PodcastCard";
 import ChatBox from "../components/ChatBox";
 import MobileChat from "../components/MobileChat";
 import RewardsPanel from "../components/RewardsPanel";
+import SharePanel from "../components/SharePanel";
 
 export default function Home() {
   const [likes, setLikes] = useState(380);
   const [liked, setLiked] = useState(false);
+
   const [chatOpen, setChatOpen] = useState(false);
-  const [rewardsOpen, setRewardsOpen] = useState(false);
+  const [rewardsOpen, setRewardsOpen] =
+    useState(false);
+  const [shareOpen, setShareOpen] =
+    useState(false);
+
   const [playing, setPlaying] = useState(false);
-  const [currentAudio, setCurrentAudio] = useState("");
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [currentAudio, setCurrentAudio] =
+    useState("");
+  const [currentIndex, setCurrentIndex] =
+    useState(0);
 
   const audioRef = useRef(null);
   const sectionRefs = useRef([]);
+
   const base = import.meta.env.BASE_URL;
+
   const podcasts = [
     {
       id: 1,
-      titulo: "Cómo afrontar la presión académica",
-      descripcion: "Aprende técnicas para controlar el estrés y mejorar tu rendimiento académico.",
-      audio: base + "audio/alex-morgan-neon-synthwave-drive-537447.mp3",
+      titulo:
+        "Cómo afrontar la presión académica",
+      descripcion:
+        "Aprende técnicas para controlar el estrés y mejorar tu rendimiento académico.",
+      audio:
+        base +
+        "audio/alex-morgan-neon-synthwave-drive-537447.mp3",
     },
     {
       id: 2,
-      titulo: "Amistades que sí valen la pena",
-      descripcion: "Cómo identificar amistades saludables y fortalecer tus relaciones.",
-      audio: base + "audio/aries-beats-synth-rock.mp3",
+      titulo:
+        "Amistades que sí valen la pena",
+      descripcion:
+        "Cómo identificar amistades saludables y fortalecer tus relaciones.",
+      audio:
+        base +
+        "audio/aries-beats-synth-rock.mp3",
     },
     {
       id: 3,
-      titulo: "¿Qué carrera debería elegir?",
-      descripcion: "Consejos prácticos para tomar una de las decisiones más importantes de tu vida.",
-      audio: base + "audio/fsm-team-escp-neonscapes.mp3",
+      titulo:
+        "¿Qué carrera debería elegir?",
+      descripcion:
+        "Consejos prácticos para tomar una de las decisiones más importantes de tu vida.",
+      audio:
+        base +
+        "audio/fsm-team-escp-neonscapes.mp3",
     },
   ];
 
   const toggleLike = () => {
-    setLikes((prev) => (liked ? prev - 1 : prev + 1));
+    setLikes((prev) =>
+      liked ? prev - 1 : prev + 1
+    );
+
     setLiked(!liked);
   };
 
@@ -54,6 +79,7 @@ export default function Home() {
 
         setCurrentAudio(audio);
         setPlaying(true);
+
         return;
       }
 
@@ -94,7 +120,9 @@ export default function Home() {
             audioRef.current.src =
               podcasts[index].audio;
 
-            await audioRef.current.play();
+            audioRef.current
+              .play()
+              .catch(() => {});
 
             setCurrentAudio(
               podcasts[index].audio
@@ -155,6 +183,7 @@ export default function Home() {
             likes={likes}
             setChatOpen={setChatOpen}
             setRewardsOpen={setRewardsOpen}
+            setShareOpen={setShareOpen}
             sectionRefs={sectionRefs}
           />
         ))}
@@ -173,7 +202,12 @@ export default function Home() {
       <RewardsPanel
         rewardsOpen={rewardsOpen}
         setRewardsOpen={setRewardsOpen}
-      />  
+      />
+
+      <SharePanel
+        shareOpen={shareOpen}
+        setShareOpen={setShareOpen}
+      />
     </>
   );
 }
