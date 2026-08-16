@@ -1,10 +1,13 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 
 import PodcastCard from "../components/PodcastCard";
+import TopicChips from "../components/TopicChips";
 import ChatBox from "../components/ChatBox";
 import MobileChat from "../components/MobileChat";
 import RewardsPanel from "../components/RewardsPanel";
 import SharePanel from "../components/SharePanel";
+import { usePlayer } from "../context/usePlayer";
+import { podcasts, getTopics } from "../data/podcasts";
 
 export default function Home() {
   const [likes, setLikes] = useState(380);
@@ -16,49 +19,23 @@ export default function Home() {
   const [shareOpen, setShareOpen] =
     useState(false);
 
-  const [playing, setPlaying] = useState(false);
-  const [currentAudio, setCurrentAudio] =
-    useState("");
-  const [currentIndex, setCurrentIndex] =
-    useState(0);
+  const [selectedTopic, setSelectedTopic] =
+    useState("Todos");
 
-  const audioRef = useRef(null);
+  const { playing, currentIndex, playTrack } = usePlayer();
+
   const sectionRefs = useRef([]);
+  const scrollContainerRef = useRef(null);
 
-  const base = import.meta.env.BASE_URL;
+  const topics = useMemo(() => ["Todos", ...getTopics()], []);
 
-  const podcasts = [
-    {
-      id: 1,
-      titulo:
-        "Cómo afrontar la presión académica",
-      descripcion:
-        "Aprende técnicas para controlar el estrés y mejorar tu rendimiento académico.",
-      audio:
-        base +
-        "audio/alex-morgan-neon-synthwave-drive-537447.mp3",
-    },
-    {
-      id: 2,
-      titulo:
-        "Amistades que sí valen la pena",
-      descripcion:
-        "Cómo identificar amistades saludables y fortalecer tus relaciones.",
-      audio:
-        base +
-        "audio/aries-beats-synth-rock.mp3",
-    },
-    {
-      id: 3,
-      titulo:
-        "¿Qué carrera debería elegir?",
-      descripcion:
-        "Consejos prácticos para tomar una de las decisiones más importantes de tu vida.",
-      audio:
-        base +
-        "audio/fsm-team-escp-neonscapes.mp3",
-    },
-  ];
+  const filteredPodcasts = useMemo(() => {
+    if (selectedTopic === "Todos") return podcasts;
+
+    return podcasts.filter(
+      (p) => p.categoria === selectedTopic
+    );
+  }, [selectedTopic]);
 
   const toggleLike = () => {
     setLikes((prev) =>
@@ -68,36 +45,31 @@ export default function Home() {
     setLiked(!liked);
   };
 
-  const playPodcast = async (audio) => {
-    try {
-      if (!audioRef.current) return;
+  // Puente: PodcastCard/AudioPlayer llaman playPodcast(audioUrl);
+  // aquí lo traducimos al reproductor global, que trabaja con el
+  // objeto podcast completo (para mostrar título, etc. en la MiniPlayer).
+  const playPodcast = (audio) => {
+    const index = filteredPodcasts.findIndex(
+      (p) => p.audio === audio
+    );
 
-      if (currentAudio !== audio) {
-        audioRef.current.src = audio;
+    if (index === -1) return;
 
-        await audioRef.current.play();
+    playTrack(filteredPodcasts[index], filteredPodcasts, index);
+  };
 
-        setCurrentAudio(audio);
-        setPlaying(true);
+  const handleSelectTopic = (topic) => {
+    setSelectedTopic(topic);
 
-        return;
-      }
-
-      if (playing) {
-        audioRef.current.pause();
-        setPlaying(false);
-      } else {
-        await audioRef.current.play();
-        setPlaying(true);
-      }
-    } catch (error) {
-      console.error(error);
-    }
+    // vuelve al inicio del feed filtrado
+    scrollContainerRef.current?.scrollTo({ top: 0 });
   };
 
   useEffect(() => {
+    sectionRefs.current = [];
+
     const observer = new IntersectionObserver(
-      async (entries) => {
+      (entries) => {
         const visible = entries.find(
           (entry) => entry.isIntersecting
         );
@@ -108,30 +80,12 @@ export default function Home() {
           visible.target.dataset.index
         );
 
-        setCurrentIndex(index);
-
-        if (
-          audioRef.current &&
-          podcasts[index]?.audio
-        ) {
-          try {
-            audioRef.current.pause();
-
-            audioRef.current.src =
-              podcasts[index].audio;
-
-            audioRef.current
-              .play()
-              .catch(() => {});
-
-            setCurrentAudio(
-              podcasts[index].audio
-            );
-
-            setPlaying(true);
-          } catch (err) {
-            console.log(err);
-          }
+        if (filteredPodcasts[index]) {
+          playTrack(
+            filteredPodcasts[index],
+            filteredPodcasts,
+            index
+          );
         }
       },
       {
@@ -144,7 +98,8 @@ export default function Home() {
     });
 
     return () => observer.disconnect();
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filteredPodcasts]);
 
   return (
     <>
@@ -164,29 +119,47 @@ export default function Home() {
         }
       `}</style>
 
-      <audio
-        ref={audioRef}
-        onEnded={() => setPlaying(false)}
-      />
+      <div className="relative h-screen bg-black text-white">
+        <TopicChips
+          topics={topics}
+          selected={selectedTopic}
+          onSelect={handleSelectTopic}
+        />
 
-      <div className="h-screen overflow-y-scroll snap-y snap-mandatory bg-black text-white">
-        {podcasts.map((podcast, index) => (
-          <PodcastCard
-            key={podcast.id}
-            podcast={podcast}
-            index={index}
-            currentIndex={currentIndex}
-            playing={playing}
-            playPodcast={playPodcast}
-            toggleLike={toggleLike}
-            liked={liked}
-            likes={likes}
-            setChatOpen={setChatOpen}
-            setRewardsOpen={setRewardsOpen}
-            setShareOpen={setShareOpen}
-            sectionRefs={sectionRefs}
-          />
-        ))}
+        <div
+          ref={scrollContainerRef}
+          className="h-screen overflow-y-scroll snap-y snap-mandatory"
+        >
+          {filteredPodcasts.map((podcast, index) => (
+            <PodcastCard
+              key={podcast.id}
+              podcast={podcast}
+              index={index}
+              currentIndex={currentIndex}
+              playing={playing}
+              playPodcast={playPodcast}
+              toggleLike={toggleLike}
+              liked={liked}
+              likes={likes}
+              setChatOpen={setChatOpen}
+              setRewardsOpen={setRewardsOpen}
+              setShareOpen={setShareOpen}
+              sectionRefs={sectionRefs}
+            />
+          ))}
+
+          {filteredPodcasts.length === 0 && (
+            <div className="h-screen flex flex-col items-center justify-center text-center px-6">
+              <p className="text-lg font-semibold">
+                Todavía no hay episodios en “{selectedTopic}”
+              </p>
+
+              <p className="text-slate-400 text-sm mt-2">
+                Prueba con otro tema o vuelve a “Todos”.
+              </p>
+            </div>
+          )}
+        </div>
       </div>
 
       <ChatBox

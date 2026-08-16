@@ -13,3 +13,12 @@
 .disco {
   animation: spinSlow 8s linear infinite;
 }
+
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}

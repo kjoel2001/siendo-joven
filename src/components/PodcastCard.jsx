@@ -26,7 +26,7 @@ export default function PodcastCard({
 
       <PodcastHeader />
 
-      <div className="relative z-10 flex flex-col items-center justify-center h-full w-full px-4 md:px-6">
+      <div className="relative z-10 flex flex-col items-center justify-center h-full w-full px-4 md:px-6 pb-32">
 
         <VinylDisc
           playing={playing}
