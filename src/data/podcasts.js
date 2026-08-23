@@ -8,6 +8,8 @@ export const podcasts = [
       "Aprende técnicas para controlar el estrés y mejorar tu rendimiento académico.",
     categoria: "Educación",
     duracion: "18 min",
+    likesIniciales: 380,
+    comentarios: 115,
     audio:
       base + "audio/alex-morgan-neon-synthwave-drive-537447.mp3",
   },
@@ -18,6 +20,8 @@ export const podcasts = [
       "Cómo identificar amistades saludables y fortalecer tus relaciones.",
     categoria: "Amistad",
     duracion: "22 min",
+    likesIniciales: 210,
+    comentarios: 48,
     audio: base + "audio/aries-beats-synth-rock.mp3",
   },
   {
@@ -27,6 +31,8 @@ export const podcasts = [
       "Consejos prácticos para tomar una de las decisiones más importantes de tu vida.",
     categoria: "Futuro",
     duracion: "26 min",
+    likesIniciales: 156,
+    comentarios: 32,
     audio: base + "audio/fsm-team-escp-neonscapes.mp3",
   },
 ];

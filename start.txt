@@ -1,1 +1,6 @@
- distrobox-enter desarrollo-web
+iniciar Proyecto: 
+    distrobox-enter desarrollo-web
+    npm run dev
+Desplegar Proyecto:
+    npm run build
+    npm run deploy
